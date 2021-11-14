@@ -92,6 +92,7 @@ module Pod
               #     "transitive dependencies that include statically linked binaries: (#{static_libs.to_sentence})"
               # end
 
+              # 这里不应该处理，因为是由开发者自己设计的
               static_deps = dynamic_pod_targets.flat_map(&:recursive_dependent_targets).uniq.select(&:build_as_static?)
               unless static_deps.empty?
                 raise Informative, "The '#{aggregate_target.label}' target has " \
