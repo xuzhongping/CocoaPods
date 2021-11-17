@@ -43,8 +43,11 @@ module Pod
       end
 
       def run
+        # 验证podfile是否存在
         verify_podfile_exists!
+        # 从当前工作区配置生成install实例
         installer = installer_for_config
+        # 是否需要repo update
         installer.repo_update = repo_update?(:default => false)
         installer.update = false
         installer.deployment = @deployment
