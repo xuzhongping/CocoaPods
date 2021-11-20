@@ -37,9 +37,11 @@ module Pod
 
             explicit_dependencies = lockfile.dependencies
             explicit_dependencies.each do |dependency|
+              # 将依赖作为顶点添加到依赖图中
               dependency_graph.add_vertex(dependency.name, dependency, true)
             end
 
+            # 根据依赖关系生成图中顶点的边
             pods = lockfile.to_hash['PODS'] || []
             pods.each do |pod|
               add_to_dependency_graph(pod, [], dependency_graph, pods_to_unlock, added_dependency_strings)
@@ -54,6 +56,7 @@ module Pod
               dependency_graph.detach_vertex_named(u)
             end
 
+            # 从lock文件获取source并赋值给depend
             dependency_graph.each do |vertex|
               next unless dep = vertex.payload
               dep.podspec_repo ||= lockfile.spec_repo(dep.root_name)

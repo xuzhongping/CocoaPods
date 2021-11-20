@@ -1,0 +1,6 @@
+framework module Apple {
+  umbrella header "Apple.h"
+
+  export *
+  module * { export * }
+}

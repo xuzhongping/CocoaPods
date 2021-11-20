@@ -83,7 +83,10 @@ module Pod
                 pod_target.file_accessors.flat_map(&:vendored_static_artifacts).length > 0
               end
               dylib_wrapper_targets.each do |pod_target|
-                pod_target.dylib_wrapper = true
+                # pod_target.dylib_wrapper = true
+                pod_target.instance_variable_set(:@build_type, BuildType.dynamic_framework)
+                pod_target.instance_variable_set(:@should_build, true)
+                pod_target.root_spec.attributes_hash['module_name'] = pod_target.root_spec.attributes_hash['name'] + '_dylib_wrapper_pod'
               end
 
               # static_libs = depended_upon_targets.flat_map(&:file_accessors).flat_map(&:vendored_static_artifacts)

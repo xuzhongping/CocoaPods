@@ -1,5 +1,6 @@
 Pod::Spec.new do |s|
     s.name         = 'Apple'
+    s.module_name  = 'Apple_XX'
     s.version      = '0.2.0'
     s.summary      = 'Crash防护组件'
     s.homepage     = 'https://phabricator.ushow.media/source/iOS-QMCrashKit'

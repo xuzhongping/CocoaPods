@@ -4,25 +4,9 @@
 <dict>
 	<key>files</key>
 	<dict>
-		<key>Headers/Apple.h</key>
-		<data>
-		yS/Z0n5mj4uxI6lVMkHmg/dzwXY=
-		</data>
-		<key>Headers/AppleHelper.h</key>
-		<data>
-		UBw7K9HPiLLz9H6vqcnbykBEpAA=
-		</data>
-		<key>Headers/AppleHelper2.h</key>
-		<data>
-		rg1ytePOyUeazbmIzC/NJ9VOJec=
-		</data>
-		<key>Headers/NSObject+AppleHelperExtension.h</key>
-		<data>
-		yeBRseLHyZybTcoe/P5lpdf+lp0=
-		</data>
 		<key>Info.plist</key>
 		<data>
-		nJCdzrkG3iM06iI1Nn3LP8spX7M=
+		mngWoy2vmbpxQfdOCtAR8HnDK3c=
 		</data>
 		<key>Modules/module.modulemap</key>
 		<data>
@@ -31,50 +15,6 @@
 	</dict>
 	<key>files2</key>
 	<dict>
-		<key>Headers/Apple.h</key>
-		<dict>
-			<key>hash</key>
-			<data>
-			yS/Z0n5mj4uxI6lVMkHmg/dzwXY=
-			</data>
-			<key>hash2</key>
-			<data>
-			64Z+05Epa59GY01tHID0gIko1UEAfvd5zcYJC83zh5I=
-			</data>
-		</dict>
-		<key>Headers/AppleHelper.h</key>
-		<dict>
-			<key>hash</key>
-			<data>
-			UBw7K9HPiLLz9H6vqcnbykBEpAA=
-			</data>
-			<key>hash2</key>
-			<data>
-			qHORnjBFeoBn9l63iLtTFTbo8IfKMW/U4FhBu1xwWT8=
-			</data>
-		</dict>
-		<key>Headers/AppleHelper2.h</key>
-		<dict>
-			<key>hash</key>
-			<data>
-			rg1ytePOyUeazbmIzC/NJ9VOJec=
-			</data>
-			<key>hash2</key>
-			<data>
-			Pdj3GXU8Z5yGIOvHSyZQ1fJDqfCvQroGrrGETKZ39Hg=
-			</data>
-		</dict>
-		<key>Headers/NSObject+AppleHelperExtension.h</key>
-		<dict>
-			<key>hash</key>
-			<data>
-			yeBRseLHyZybTcoe/P5lpdf+lp0=
-			</data>
-			<key>hash2</key>
-			<data>
-			1m0XEpQt+07/Nv+9BRj5JxsEYKMWNRIS3LczPlxVFGc=
-			</data>
-		</dict>
 		<key>Modules/module.modulemap</key>
 		<dict>
 			<key>hash</key>
