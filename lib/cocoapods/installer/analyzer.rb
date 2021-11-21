@@ -172,6 +172,7 @@ module Pod
           plugin_sources = @plugin_sources || []
 
           # Add any sources specified using the :source flag on individual dependencies.
+          # 单pod指定的所有source
           dependency_sources = podfile_dependencies.map(&:podspec_repo).compact
           all_dependencies_have_sources = dependency_sources.count == podfile_dependencies.count
 
@@ -918,6 +919,7 @@ module Pod
       def determine_build_type(spec, target_definition_build_type)
         if target_definition_build_type.framework?
           root_spec = spec.root
+          # 如果spec中设置为static_framework，就确定此pod target构建为static_framework,否则为podfile中设置的
           root_spec.static_framework ? BuildType.static_framework : target_definition_build_type
         else
           BuildType.static_library
@@ -1076,6 +1078,7 @@ module Pod
       #         grouped by target.
       #
       def resolve_dependencies(locked_dependencies)
+        # 根据依赖的名字进行分组，看是否有重复的依赖
         duplicate_dependencies = podfile_dependencies.group_by(&:name).
           select { |_name, dependencies| dependencies.count > 1 }
         duplicate_dependencies.each do |name, dependencies|

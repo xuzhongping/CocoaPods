@@ -9,7 +9,9 @@ module Pod
         #         All the dependencies in the podfile
         #
         attr_reader :podfile_dependencies
-
+        
+        # @param [Array<Pod::Dependency>] podfile_dependencies podfile中声明的依赖
+        # @param [Hash{Pod::Podfile::TargetDefinition}] dependencies_by_target_definition podfile中以target为key分组的依赖
         def initialize(podfile_dependencies, dependencies_by_target_definition)
           @podfile_dependencies = podfile_dependencies
           @dependencies_by_target_definition = dependencies_by_target_definition
