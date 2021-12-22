@@ -1,0 +1,30 @@
+# Uncomment the next line to define a global platform for your project
+# platform :ios, '9.0'
+
+#abstract_target 'Group1' do
+#  use_frameworks!
+#  pod 'SDWebImage'
+#
+#  target 'AExample copy'
+#
+#end
+#
+#abstract_target 'Group1' do
+#  abstract_target 'Group2' do
+#    pod 'MJRefresh'
+#    target 'AExample'
+#  end
+#end
+
+target 'AExample' do
+    pod 'MJRefresh'
+
+    target 'AExample copy'
+end
+
+
+
+
+
+
+
