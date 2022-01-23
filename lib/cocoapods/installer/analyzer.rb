@@ -87,11 +87,10 @@ module Pod
         @result = nil
       end
 
-      # Performs the analysis.
+      # 执行分析
       #
-      # The Podfile and the Lockfile provide the information necessary to
-      # compute which specification should be installed. The manifest of the
-      # sandbox returns which specifications are installed.
+      # Podfile和Podfile.lock文件保存了应该安装哪些pod的信息，
+      # manifest.lock文件记录了sandbox已安装的pod信息。
       #
       # @param  [Bool] allow_fetches
       #         whether external sources may be fetched
@@ -257,12 +256,17 @@ module Pod
       # Compares the {Podfile} with the {Lockfile} in order to detect which
       # dependencies should be locked.
       #
+      #  比较{Podfile}和{Lockfile}，以检测哪些依赖项应该被锁定。
+      #
       # @return [SpecsState] the states of the Podfile specs.
       #
       # @note   As the target definitions share the same sandbox they should have
       #         the same version of a Pod. For this reason this method returns
       #         the name of the Pod (root name of the dependencies) and doesn't
       #         group them by target definition.
+      #
+      #          由于目标定义共享相同的沙盒，它们应该具有相同的Pod版本。由于这个原因，
+      #          该方法返回Pod的名称(依赖项的根名称)，并且不按照目标定义对它们进行分组。
       #
       # @return [SpecState]
       #
@@ -964,6 +968,9 @@ module Pod
       #         which are missing or are generated from an local source are
       #         fetched as well.
       #
+      #         在更新模式下，所有的外部源都会被刷新，而在正常模式下，只有在Podfile中被添加或修改时才会刷新。
+      #         此外，在正常规范中，对于未更改的Pods，如果缺少或从本地源生成，也会被获取。
+      #
       # @note   It is possible to perform this step before the resolution
       #         process because external sources identify a single specific
       #         version (checkout). If the other dependencies are not
@@ -1009,12 +1016,19 @@ module Pod
       def dependencies_to_fetch(podfile_state)
         @deps_to_fetch ||= begin
           deps_to_fetch = []
+          # 所有的external pod
           deps_with_external_source = podfile_dependencies.select(&:external_source)
 
           if update_mode == :all
             deps_to_fetch = deps_with_external_source
           else
+            # 根据podfile_state得出的需要更新的external pod
             deps_to_fetch = deps_with_external_source.select { |dep| pods_to_fetch(podfile_state).include?(dep.root_name) }
+            # unchange的external pod，但是还需要判断4个case：
+            #   * sandbox中需要存在podspec文件
+            #   * 是否是path类型的pod
+            #   * sandbox中是否存在其缓存目录
+            #   * 检查和manifest.lock文件中的MD5值是否相同
             deps_to_fetch_if_needed = deps_with_external_source.select { |dep| podfile_state.unchanged.include?(dep.root_name) }
             deps_to_fetch += deps_to_fetch_if_needed.select do |dep|
               sandbox.specification_path(dep.root_name).nil? ||

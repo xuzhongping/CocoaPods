@@ -11,6 +11,8 @@ target 'simpleExample' do
 #   pod 'Apple', :path => './Modules/Apple/Apple.podspec'
 
   pod 'AFNetworking'
+
+  pod 'MJExtension', :git => 'https://github.com/CoderMJLee/MJExtension.git', :branch => 'master'
   # Pods for simpleExample
 
   target 'simpleExampleTests' do
