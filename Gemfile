@@ -22,7 +22,7 @@ group :development do
   cp_gem 'claide',                'CLAide'
   cp_gem 'cocoapods-core',        'Core', '1-11-stable'
   cp_gem 'cocoapods-deintegrate', 'cocoapods-deintegrate'
-  cp_gem 'cocoapods-downloader',  'cocoapods-downloader'
+  cp_gem 'cocoapods-downloader',  'cocoapods-downloader', path: '../cocoapods-downloader'
   cp_gem 'cocoapods-plugins',     'cocoapods-plugins'
   cp_gem 'cocoapods-search',      'cocoapods-search'
   cp_gem 'cocoapods-trunk',       'cocoapods-trunk'

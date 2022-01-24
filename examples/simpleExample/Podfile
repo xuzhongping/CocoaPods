@@ -12,7 +12,7 @@ target 'simpleExample' do
 
   pod 'AFNetworking'
 
-  pod 'MJExtension', :git => 'https://github.com/CoderMJLee/MJExtension.git', :branch => 'master'
+  pod 'MJExtension', :git => 'https://github.com/CoderMJLee/MJExtension.git'
   # Pods for simpleExample
 
   target 'simpleExampleTests' do

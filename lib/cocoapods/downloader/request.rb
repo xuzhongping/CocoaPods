@@ -63,6 +63,7 @@ module Pod
         if released_pod?
           "Release/#{name}/#{spec.version}#{checksum}"
         else
+          params = filter_extra_params(params)
           opts = params.to_a.sort_by(&:first).map { |k, v| "#{k}=#{v}" }.join('-')
           digest = Digest::MD5.hexdigest(opts)
           "External/#{name}/#{digest}#{checksum}"
@@ -80,6 +81,14 @@ module Pod
         raise ArgumentError, 'Must give a spec for a released download request' if released_pod? && !spec
         raise ArgumentError, 'Requires a version if released' if released_pod? && !spec.version
         raise ArgumentError, 'Requires params' unless params
+      end
+
+      def filter_extra_params(params)
+        new_params = params.dup
+        if new_params.key?(:git)
+          new_params.delete(:branch)
+        end
+        new_params
       end
     end
   end

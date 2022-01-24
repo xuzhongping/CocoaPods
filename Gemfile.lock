@@ -56,13 +56,6 @@ GIT
     cocoapods-deintegrate (1.0.5)
 
 GIT
-  remote: https://github.com/CocoaPods/cocoapods-downloader.git
-  revision: eed7e8f6c42c2e2f582f5c6c34bf44dcf0a08120
-  branch: master
-  specs:
-    cocoapods-downloader (1.5.1)
-
-GIT
   remote: https://github.com/CocoaPods/cocoapods-plugins.git
   revision: 5fe129c3a803dd91fac58ddc5996eecb0ddb4703
   branch: master
@@ -106,6 +99,11 @@ GIT
     clintegracon (0.9.0)
       colored2 (~> 3.1)
       diffy
+
+PATH
+  remote: ../cocoapods-downloader
+  specs:
+    cocoapods-downloader (1.5.1)
 
 PATH
   remote: .
@@ -329,4 +327,4 @@ DEPENDENCIES
   xcodeproj!
 
 BUNDLED WITH
-   2.2.8
+   2.3.3
