@@ -134,6 +134,7 @@ module Pod
         #
         # @note   This resolves to the lowest deployment target across the user
         #         targets.
+        # 解析user target的最低部署版本
         #
         # @todo   Is assigning the platform to the target definition the best way
         #         to go?

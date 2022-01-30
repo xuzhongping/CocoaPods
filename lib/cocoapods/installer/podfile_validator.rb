@@ -35,11 +35,17 @@ module Pod
       # Validate the podfile
       # Errors are added to the errors array
       #
+      # 将Podfile中error添加到errors数组
       def validate
+        # 验证Podfile中的安装选项中是否有错误
         validate_installation_options
+        # 验证Podfile中Pod的定义策略是否有错误
         validate_pod_directives
+        # 验证所有的Pod都属于一个非抽象的Target，会被一个Target继承
         validate_no_abstract_only_pods!
+        # 验证Podfile中是否存在Target
         validate_dependencies_are_present!
+        # 验证一个project中是否存在重复target
         validate_no_duplicate_targets!
 
         @validated = true
@@ -76,6 +82,7 @@ module Pod
         installation_options = podfile.installation_options
 
         # Validate `incremental_installation` depends on `generate_multiple_pod_projects`
+        # 验证增量安装依赖于多Pod工程
         invalid = installation_options.incremental_installation? && installation_options.incremental_installation != installation_options.generate_multiple_pod_projects
         add_error 'The installation option `incremental_installation` requires the option `generate_multiple_pod_projects` to also be enabled.' if invalid
       end

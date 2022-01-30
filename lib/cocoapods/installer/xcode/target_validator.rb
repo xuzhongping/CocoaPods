@@ -73,18 +73,34 @@ module Pod
           aggregate_targets.each do |aggregate_target|
             aggregate_target.user_build_configurations.each_key do |config|
               pod_targets = aggregate_target.pod_targets_for_build_configuration(config)
+              # built_targets 需要build的target
+              # unbuilt_targets 不需要build的target
               built_targets, unbuilt_targets = pod_targets.partition(&:should_build?)
+              # 需要构建为dynamic的target
               dynamic_pod_targets = built_targets.select(&:build_as_dynamic?)
 
+              # dynamic的targets的依赖库
               dependencies = dynamic_pod_targets.flat_map(&:dependent_targets).uniq
+              # dynamic的targets的依赖库里不需要被构建的
               depended_upon_targets = unbuilt_targets & dependencies
 
+              # dylib_wrapper_targets = depended_upon_targets.select do |pod_target|
+              #   pod_target.file_accessors.flat_map(&:vendored_static_artifacts).length > 0
+              # end
+              # dylib_wrapper_targets.each do |pod_target|
+              #   # pod_target.dylib_wrapper = true
+              #   pod_target.instance_variable_set(:@build_type, BuildType.dynamic_framework)
+              #   pod_target.instance_variable_set(:@should_build, true)
+              #   pod_target.root_spec.attributes_hash['module_name'] = pod_target.root_spec.attributes_hash['name'] + '_dylib_wrapper_pod'
+              # end
+              #
               static_libs = depended_upon_targets.flat_map(&:file_accessors).flat_map(&:vendored_static_artifacts)
               unless static_libs.empty?
                 raise Informative, "The '#{aggregate_target.label}' target has " \
                   "transitive dependencies that include statically linked binaries: (#{static_libs.to_sentence})"
               end
 
+              # 这里不应该处理，因为是由开发者自己设计的
               static_deps = dynamic_pod_targets.flat_map(&:recursive_dependent_targets).uniq.select(&:build_as_static?)
               unless static_deps.empty?
                 raise Informative, "The '#{aggregate_target.label}' target has " \

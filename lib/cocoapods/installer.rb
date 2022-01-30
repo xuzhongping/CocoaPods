@@ -157,15 +157,21 @@ module Pod
     # @return [void]
     #
     def install!
+      # 准备工作
       prepare
+      # 依赖解析
       resolve_dependencies
+      # 下载依赖
       download_dependencies
+      # 校验target
       validate_targets
       if installation_options.skip_pods_project_generation?
         show_skip_pods_project_generation_message
       else
+        # 生成Pods工程和集成用户工程
         integrate
       end
+      # 将依赖更新写入 Podfile.lock 和 Manifest.lock
       write_lockfiles
       perform_post_install_actions
     end
@@ -179,6 +185,7 @@ module Pod
       run_podfile_pre_integrate_hooks
       generate_pods_project
       if installation_options.integrate_targets?
+        # 集成进user project，并创建workspace
         integrate_user_project
       else
         UI.section 'Skipping User Project Integration'
@@ -188,7 +195,7 @@ module Pod
     def analyze_project_cache
       user_projects = aggregate_targets.map(&:user_project).compact.uniq
       object_version = user_projects.min_by { |p| p.object_version.to_i }.object_version.to_i unless user_projects.empty?
-
+      # 如果不需要增量安装
       if !installation_options.incremental_installation
         # Run entire installation.
         ProjectCache::ProjectCacheAnalysisResult.new(pod_targets, aggregate_targets, {},
@@ -213,6 +220,7 @@ module Pod
     end
 
     def prepare
+      # 运行目录检查
       # Raise if pwd is inside Pods
       if Dir.pwd.start_with?(sandbox.root.to_path)
         message = 'Command should be run from a directory outside Pods directory.'
@@ -220,9 +228,13 @@ module Pod
         raise Informative, message
       end
       UI.message 'Preparing' do
+        # 判断是否有重大更新决定是否 deintegrate pod
         deintegrate_if_different_major_version
+        # 沙盒的准备工作
         sandbox.prepare
+        # 确保podfile中引入的插件都已经安装
         ensure_plugins_are_installed!
+        # 运行插件已注册的pre_install_hooks
         run_plugins_pre_install_hooks
       end
     end
@@ -230,9 +242,11 @@ module Pod
     # @return [Analyzer] The analyzer used to resolve dependencies
     #
     def resolve_dependencies
+      # 执行插件的 source_provider hook 方法，用来加载插件内配置的 repo 源
       plugin_sources = run_source_provider_hooks
+      # 创建解析器
       analyzer = create_analyzer(plugin_sources)
-
+      # 决定是否需要repo update
       UI.section 'Updating local specs repositories' do
         analyzer.update_repositories
       end if repo_update?
@@ -243,7 +257,9 @@ module Pod
       end
 
       UI.section 'Verifying no changes' do
+        # 验证podfile中对比lock文件没有修改而导致pod状态变化
         verify_no_podfile_changes!
+        # 验证本次生成的lock文件对比已有的没有变化
         verify_no_lockfile_changes!
       end if deployment?
 
@@ -252,8 +268,11 @@ module Pod
 
     def download_dependencies
       UI.section 'Downloading dependencies' do
+        # 下载并安装pod的源码
         install_pod_sources
+        # 运行podfile中的pre_install_hooks
         run_podfile_pre_install_hooks
+        # 清理不使用的文件
         clean_pod_sources
       end
     end
@@ -290,18 +309,22 @@ module Pod
     # Generates the Xcode project(s) that go inside the `Pods/` directory.
     #
     def generate_pods_project
+      # pod tagrt和user target 增加header search path
       stage_sandbox(sandbox, pod_targets)
-
+      # 检查是否支持增量编译，如果支持将返回 cache result
       cache_analysis_result = analyze_project_cache
+      # 准备重新生成的 pod target
       pod_targets_to_generate = cache_analysis_result.pod_targets_to_generate
+      # 准备重新生成的 aggregate target
       aggregate_targets_to_generate = cache_analysis_result.aggregate_targets_to_generate
-
+      # 清理沙盒中需要重新生成的pod target的header文件，和需要删除的pod dir
       clean_sandbox(pod_targets_to_generate)
-
+      # 创建和生成Pods工程，组装所有需要的信息
       create_and_save_projects(pod_targets_to_generate, aggregate_targets_to_generate,
                                cache_analysis_result.build_configurations, cache_analysis_result.project_object_version)
+      # 清理未使用的target support dirs、header dirs、target project dirs
       SandboxDirCleaner.new(sandbox, pod_targets, aggregate_targets).clean!
-
+      # 更新安装后的 cache 结果到目录 `Pods/.project_cache` 下
       update_project_cache(cache_analysis_result, target_installation_results)
     end
 
@@ -328,6 +351,7 @@ module Pod
         projects_writer = Xcode::PodsProjectWriter.new(sandbox, generated_projects,
                                                        target_installation_results.pod_target_installation_results, installation_options)
         projects_writer.write! do
+          # 执行 post_install_hooks
           run_podfile_post_install_hooks
         end
 
@@ -452,6 +476,7 @@ module Pod
         sandbox.public_headers.implode_path!(pod_target.headers_sandbox)
       end
 
+      # 清理Pods dir内的需要删除的 target dir
       unless sandbox_state.deleted.empty?
         title_options = { :verbose_prefix => '-> '.red }
         sandbox_state.deleted.each do |pod_name|

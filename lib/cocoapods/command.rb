@@ -55,6 +55,7 @@ module Pod
     end
 
     def self.report_error(exception)
+      puts caller
       case exception
       when Interrupt
         puts '[!] Cancelled'.red

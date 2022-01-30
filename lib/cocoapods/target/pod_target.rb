@@ -121,6 +121,8 @@ module Pod
     #
     attr_reader :swift_version
 
+    attr_accessor :dylib_wrapper
+
     # Initialize a new instance
     #
     # @param [Sandbox] sandbox @see Target#sandbox
