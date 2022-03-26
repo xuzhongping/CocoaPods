@@ -57,13 +57,18 @@ module Pod
 
       # Creates a method that calculates a part of the build settings for the {#target}.
       #
+      # 创建一个方法，用于计算target的部分build settings
+      #
       # @!visibility private
       #
       # @param [Symbol,String] method_name
       #   The name of the method to define
+      #   方法名
       #
       # @param [Boolean] build_setting
       #   Whether the method name should be added (upcased) to {.build_setting_names}
+      #
+      #   是否应该将方法的大写添加到build_setting_names
       #
       # @param [Boolean] memoized
       #   Whether the method should be memoized
@@ -71,14 +76,22 @@ module Pod
       # @param [Boolean] sorted
       #   Whether the return value should be sorted
       #
+      #   返回值是否应该排序
+      #
       # @param [Boolean] uniqued
       #   Whether the return value should be uniqued
+      #
+      #   返回值是否唯一
       #
       # @param [Boolean] compacted
       #   Whether the return value should be compacted
       #
+      #   是否应该压缩返回值
+      #
       # @param [Boolean] frozen
       #   Whether the return value should be frozen
+      #
+      #   是否应该frozen返回值
       #
       # @param [Boolean, Symbol] from_search_paths_aggregate_targets
       #   If truthy, the method from {Aggregate} that should be used to concatenate build settings from
@@ -944,9 +957,11 @@ module Pod
 
         # @return [Array<String>]
         define_build_settings_method :swift_include_paths_to_import, :memoized => true do
-          return [] unless target.uses_swift? && !target.build_as_framework?
-
-          [target.configuration_build_dir(CONFIGURATION_BUILD_DIR_VARIABLE)]
+          return [] unless target.uses_swift?
+          vendored_static_library_search_paths + vendored_dynamic_library_search_paths
+          # return [] unless target.uses_swift? && !target.build_as_framework?
+          #
+          # [target.configuration_build_dir(CONFIGURATION_BUILD_DIR_VARIABLE)]
         end
 
         #-------------------------------------------------------------------------#
