@@ -1150,7 +1150,7 @@ module Pod
           def validate_targets_contain_sources(native_targets)
             native_targets.each do |native_target|
               next unless native_target.source_build_phase.files.empty?
-              # raise Informative, "Unable to install the `#{target.label}` pod, because the `#{native_target}` target in Xcode would have no sources to compile."
+              raise Informative, "Unable to install the `#{target.label}` pod, because the `#{native_target}` target in Xcode would have no sources to compile."
             end
           end
 

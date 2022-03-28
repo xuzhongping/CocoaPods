@@ -950,7 +950,7 @@ module Pod
         # @return [Array<String>]
         define_build_settings_method :swift_include_paths, :build_setting => true, :memoized => true, :sorted => true, :uniqued => true do
           paths = dependent_targets.flat_map { |pt| pt.build_settings[@configuration].swift_include_paths_to_import }
-          paths.concat swift_include_paths_to_import if non_library_xcconfig?
+          # paths.concat swift_include_paths_to_import if non_library_xcconfig?
           paths.concat(vendored_static_library_search_paths + vendored_dynamic_library_search_paths) if target.uses_swift?
           paths.concat ['$(PLATFORM_DIR)/Developer/usr/lib'] if should_apply_xctunwrap_fix?
           paths
@@ -958,8 +958,7 @@ module Pod
 
         # @return [Array<String>]
         define_build_settings_method :swift_include_paths_to_import, :memoized => true do
-          paths = []
-          paths.concat vendored_static_library_search_paths + vendored_dynamic_library_search_paths if !target.spec_swift_versions.empty?
+          paths = vendored_static_library_search_paths + vendored_dynamic_library_search_paths
           paths.concat [target.configuration_build_dir(CONFIGURATION_BUILD_DIR_VARIABLE)] if target.uses_swift? && !target.build_as_framework?
           paths
           # return [] unless target.uses_swift? && !target.build_as_framework?
