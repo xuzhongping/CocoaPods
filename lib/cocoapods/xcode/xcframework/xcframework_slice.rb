@@ -132,6 +132,18 @@ module Pod
             end
           end
         end
+
+        # @return [Boolean] true if this slices includes swift module
+        #
+        def includes_swift_module?
+          base = case package_type
+                 when :framework
+                   path + 'Modules'
+                 when :library
+                   path.dirname
+                 end
+          base.join("#{target_name}.swiftmodule").directory?
+        end
       end
     end
   end
