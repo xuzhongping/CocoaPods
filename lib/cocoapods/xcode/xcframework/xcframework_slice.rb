@@ -142,7 +142,7 @@ module Pod
                  when :library
                    path.dirname
                  end
-          base.join("#{target_name}.swiftmodule").directory?
+          base.join("#{name}.swiftmodule").directory?
         end
       end
     end
