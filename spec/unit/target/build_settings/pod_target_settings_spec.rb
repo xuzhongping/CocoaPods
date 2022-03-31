@@ -211,7 +211,8 @@ module Pod
             hash = generator.generate.to_hash
             hash['SYSTEM_FRAMEWORK_SEARCH_PATHS'].should.be.nil
             hash['LIBRARY_SEARCH_PATHS'].should.not.include '"$(PLATFORM_DIR)/Developer/usr/lib"'
-            hash['SWIFT_INCLUDE_PATHS'].should.not.include '"$(PLATFORM_DIR)/Developer/usr/lib"'
+            hash['SWIFT_INCLUDE_PATHS'].should.be.nil
+            # hash['SWIFT_INCLUDE_PATHS'].should.not.include '"$(PLATFORM_DIR)/Developer/usr/lib"'
           end
 
           it 'saves the xcconfig' do
@@ -255,6 +256,24 @@ module Pod
             @generator.stubs(:dependent_targets => [pod_target])
             @generator.other_ldflags.should.
               be == %w(-l"BananaStaticLib" -l"xml2" -framework "BananaFramework" -framework "VendoredFramework" -framework "dynamic-monkey" -weak_framework "iAd")
+          end
+
+          it 'swift include paths of swift library xcframeworks' do
+            spec = fixture_spec('xcframeworks/includes-swift-module/library/CoconutLib.podspec')
+            pod_target = fixture_pod_target_with_specs([spec])
+            generator = PodTargetSettings.new(pod_target, nil, :configuration => :debug)
+            hash = generator.generate.to_hash
+            hash['SWIFT_INCLUDE_PATHS'].should.include '"${PODS_XCFRAMEWORKS_BUILD_DIR}/CoconutLib"'
+
+            pod_target.stubs(:should_build?).returns(false)
+            generator = PodTargetSettings.new(pod_target, nil, :configuration => :debug)
+            hash = generator.generate.to_hash
+            hash['SWIFT_INCLUDE_PATHS'].should.be.nil?
+
+            pod_target.stubs(:uses_swift?).returns(false)
+            generator = PodTargetSettings.new(pod_target, nil, :configuration => :debug)
+            hash = generator.generate.to_hash
+            hash['SWIFT_INCLUDE_PATHS'].should.be.nil?
           end
         end
 
@@ -472,6 +491,16 @@ module Pod
             generator = PodTargetSettings.new(@coconut_pod_target, @coconut_test_spec, :configuration => :debug)
             xcconfig = generator.generate
             xcconfig.to_hash['CONFIGURATION_BUILD_DIR'].should.be.nil
+          end
+
+          it 'swift include paths of swift library xcframeworks' do
+            spec = fixture_spec('xcframeworks/includes-swift-module/library/CoconutLib.podspec')
+            test_spec = spec.test_specs.first
+            pod_target = fixture_pod_target_with_specs([spec, test_spec])
+            generator = PodTargetSettings.new(pod_target, test_spec, :configuration => :debug)
+            hash = generator.generate.to_hash
+            hash['SWIFT_INCLUDE_PATHS'].should.include '"${PODS_CONFIGURATION_BUILD_DIR}/CoconutLib"'
+            hash['SWIFT_INCLUDE_PATHS'].should.include '"${PODS_XCFRAMEWORKS_BUILD_DIR}/CoconutLib"'
           end
         end
       end
