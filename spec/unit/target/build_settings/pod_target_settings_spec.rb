@@ -260,20 +260,24 @@ module Pod
 
           it 'swift include paths of swift library xcframeworks' do
             spec = fixture_spec('xcframeworks/includes-swift-module/library/CoconutLib.podspec')
-            pod_target = fixture_pod_target_with_specs([spec])
-            generator = PodTargetSettings.new(pod_target, nil, :configuration => :debug)
-            hash = generator.generate.to_hash
-            hash['SWIFT_INCLUDE_PATHS'].should.include '"${PODS_XCFRAMEWORKS_BUILD_DIR}/CoconutLib"'
+            pod_target1 = fixture_pod_target_with_specs([spec])
+            pod_target1.stubs(:should_build?).returns(true)
+            pod_target1.stubs(:uses_swift?).returns(true)
+            generator1 = PodTargetSettings.new(pod_target1, nil, :configuration => :debug)
+            hash1 = generator1.generate.to_hash
+            hash1['SWIFT_INCLUDE_PATHS'].should.include '"${PODS_XCFRAMEWORKS_BUILD_DIR}/CoconutLib"'
 
-            pod_target.stubs(:should_build?).returns(false)
-            generator = PodTargetSettings.new(pod_target, nil, :configuration => :debug)
-            hash = generator.generate.to_hash
-            hash['SWIFT_INCLUDE_PATHS'].should.be.nil?
+            pod_target2 = fixture_pod_target_with_specs([spec])
+            pod_target2.stubs(:should_build?).returns(false)
+            generator2 = PodTargetSettings.new(pod_target2, nil, :configuration => :debug)
+            hash2 = generator2.generate.to_hash
+            hash2['SWIFT_INCLUDE_PATHS'].should.be.nil?
 
-            pod_target.stubs(:uses_swift?).returns(false)
-            generator = PodTargetSettings.new(pod_target, nil, :configuration => :debug)
-            hash = generator.generate.to_hash
-            hash['SWIFT_INCLUDE_PATHS'].should.be.nil?
+            pod_target3 = fixture_pod_target_with_specs([spec])
+            pod_target3.stubs(:uses_swift?).returns(false)
+            generator3 = PodTargetSettings.new(pod_target3, nil, :configuration => :debug)
+            hash3 = generator3.generate.to_hash
+            hash3['SWIFT_INCLUDE_PATHS'].should.be.nil?
           end
         end
 
@@ -496,11 +500,20 @@ module Pod
           it 'swift include paths of swift library xcframeworks' do
             spec = fixture_spec('xcframeworks/includes-swift-module/library/CoconutLib.podspec')
             test_spec = spec.test_specs.first
-            pod_target = fixture_pod_target_with_specs([spec, test_spec])
-            generator = PodTargetSettings.new(pod_target, test_spec, :configuration => :debug)
-            hash = generator.generate.to_hash
-            hash['SWIFT_INCLUDE_PATHS'].should.include '"${PODS_CONFIGURATION_BUILD_DIR}/CoconutLib"'
-            hash['SWIFT_INCLUDE_PATHS'].should.include '"${PODS_XCFRAMEWORKS_BUILD_DIR}/CoconutLib"'
+            pod_target1 = fixture_pod_target_with_specs([spec, test_spec])
+            pod_target1.stubs(:should_build?).returns(true)
+            pod_target1.stubs(:uses_swift?).returns(true)
+            generator1 = PodTargetSettings.new(pod_target1, test_spec, :configuration => :debug)
+            hash1 = generator1.generate.to_hash
+            hash1['SWIFT_INCLUDE_PATHS'].should.include '"${PODS_CONFIGURATION_BUILD_DIR}/CoconutLib"'
+            hash1['SWIFT_INCLUDE_PATHS'].should.include '"${PODS_XCFRAMEWORKS_BUILD_DIR}/CoconutLib"'
+
+            pod_target2 = fixture_pod_target_with_specs([spec, test_spec])
+            pod_target2.stubs(:should_build?).returns(false)
+            generator2 = PodTargetSettings.new(pod_target2, test_spec, :configuration => :debug)
+            hash2 = generator2.generate.to_hash
+            hash2['SWIFT_INCLUDE_PATHS'].should.not.include '"${PODS_CONFIGURATION_BUILD_DIR}/CoconutLib"'
+            hash2['SWIFT_INCLUDE_PATHS'].should.include '"${PODS_XCFRAMEWORKS_BUILD_DIR}/CoconutLib"'
           end
         end
       end
