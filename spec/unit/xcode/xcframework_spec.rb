@@ -194,6 +194,7 @@ module Pod
           it 'reads other library includes swift module' do
             include_swift_xcframework_path = fixture('xcframeworks/includes-swift-module/library/CoconutLib.xcframework')
             include_swift_xcframework = XCFramework.new('CoconutLib', include_swift_xcframework_path)
+            puts "--------#{include_swift_xcframework.slices}---------"
 
             include_swift_xcframework.includes_swift_module?.should.be.true?
             slices = include_swift_xcframework.slices.sort_by(&:identifier)
